@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
+import clsx from 'clsx';
 
 // * codemirror
 import CodeMirror from 'codemirror';
@@ -13,7 +14,7 @@ import { RegexCtx } from '../context/RegexContextProvider';
 const RegexEditor = () => {
   const editorRef = useRef(null);
   const editorInstance = useRef(null);
-  const { regex, setRegex } = useContext(RegexCtx);
+  const { regex, setRegex, matchCount } = useContext(RegexCtx);
   const config = {
     value: regex,
     lineWrapping: false,
@@ -81,9 +82,26 @@ const RegexEditor = () => {
   }, [regex, editorInstance.current]);
 
   return (
-    <div className='editor-container flex items-center justify-center bg-red-200 p-5'>
-      <div ref={editorRef} className='editor regex-editor w-full' />
-    </div>
+    <section className='regex-editor-section'>
+      <header className='flex justify-between items-start'>
+        <h2 className='font-semibold mb-2'>Regex</h2>
+        <span
+          className={clsx(
+            'match-count text-sm text-white rounded-md px-3 pt-1 pb-1.5 -mt-0.5',
+            matchCount === 0 ? 'bg-gray-500/60' : 'bg-gray-600'
+          )}
+        >
+          {clsx(
+            matchCount === 0 && 'no match',
+            matchCount === 1 && '1 match',
+            matchCount > 1 && [matchCount, 'matches']
+          )}
+        </span>
+      </header>
+      <div className='editor-container flex items-center justify-center border border-gray-300 pb-0.5'>
+        <div ref={editorRef} className='editor regex-editor w-full' />
+      </div>
+    </section>
   );
 };
 

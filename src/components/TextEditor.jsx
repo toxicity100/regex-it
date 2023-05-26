@@ -13,14 +13,16 @@ const TextEditor = () => {
   const editorRef = useRef(null);
   const editorInstance = useRef(null);
   const [text, setText] = useState('sina bayan');
-  const { regex } = useContext(RegexCtx);
+  const { regex, setMatchCount } = useContext(RegexCtx);
 
   useEffect(() => {
     if (!editorRef.current || editorInstance.current) return;
 
     const editor = CodeMirror(editorRef.current);
     editorInstance.current = editor;
-    editor.on('change', e => setText(e.getValue()));
+    editor.on('change', e => {
+      setText(e.getValue());
+    });
   }, [editorRef.current, editorInstance.current]);
 
   useEffect(() => {
@@ -29,7 +31,8 @@ const TextEditor = () => {
     const editor = editorInstance.current;
     const doc = editor.getDoc();
     const marks = editor.getAllMarks();
-    let searchRegex;
+    let searchRegex,
+      marksCount = 0;
 
     if (marks && marks.length > 0) marks.forEach(marker => marker.clear());
 
@@ -49,13 +52,21 @@ const TextEditor = () => {
         { line: to.line, ch: to.ch },
         { className: 'highlighted-text' }
       );
+      marksCount++;
     }
+
+    setMatchCount(marksCount);
   }, [text, regex, editorInstance.current]);
 
   return (
-    <div className='editor-container bg-blue-200 p-5'>
-      <div ref={editorRef} className='editor text-editor' />
-    </div>
+    <section className='text-editor-section mt-6 overflow-hidden'>
+      <header>
+        <h2 className='font-semibold mb-2'>Test String</h2>
+      </header>
+      <div className='editor-container border border-gray-300'>
+        <div ref={editorRef} className='editor text-editor' />
+      </div>
+    </section>
   );
 };
 

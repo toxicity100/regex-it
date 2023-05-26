@@ -22,24 +22,24 @@
   overflow-y: hidden !important;
 }
 
-.CodeMirror {
+.regex-editor .CodeMirror {
   overflow: hidden !important;
 }
 
-.CodeMirror-scroll {
+.regex-editor .CodeMirror-scroll {
   overflow-y: hidden !important;
 }
 
-.CodeMirror-scrollbar-filler {
+.regex-editor .CodeMirror-scrollbar-filler {
   width: 0 !important;
 }
 
-.CodeMirror-vscrollbar {
+.regex-editor .CodeMirror-vscrollbar {
   display: none !important;
   overflow: hidden !important;
 }
 
-.CodeMirror-hscrollbar {
+.regex-editor .CodeMirror-hscrollbar {
   height: 5px !important;
   right: 0 !important;
 }
