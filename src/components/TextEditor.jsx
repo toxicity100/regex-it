@@ -28,11 +28,10 @@ const TextEditor = () => {
 
     const editor = editorInstance.current;
     const doc = editor.getDoc();
-    const allMarkers = editor.getAllMarks();
+    const marks = editor.getAllMarks();
     let searchRegex;
 
-    if (allMarkers && allMarkers.length > 0)
-      allMarkers.forEach(marker => marker.clear());
+    if (marks && marks.length > 0) marks.forEach(marker => marker.clear());
 
     try {
       searchRegex = new RegExp(regex, 'gi');
