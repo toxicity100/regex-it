@@ -8,13 +8,25 @@ import 'codemirror/lib/codemirror.css';
 import './Editor.css';
 import './RegexEditor.css';
 
+// * hooks
+import useSwitch from '../hooks/useSwitch';
+import useClickOutside from '../hooks/useClickOutside';
+
 // * context
 import { RegexCtx } from '../context/RegexContextProvider';
+
+// * components
+import Tooltip from './Tooltip';
+import FlagsTooltip from './FlagsTooltip';
 
 const RegexEditor = () => {
   const editorRef = useRef(null);
   const editorInstance = useRef(null);
-  const { regex, setRegex, matchCount } = useContext(RegexCtx);
+  const endWidgetRef = useRef(null);
+  const flagsButtonRef = useRef(null);
+  const { regex, setRegex, flagsString, matchCount } = useContext(RegexCtx);
+  const [shown, shownToggler] = useSwitch();
+  useClickOutside(flagsButtonRef, () => shownToggler(false));
   const config = {
     value: regex,
     lineWrapping: false,
@@ -29,11 +41,13 @@ const RegexEditor = () => {
     const startWidget = document.createElement('span');
     const endWidget = document.createElement('span');
 
+    endWidgetRef.current = endWidget;
+
     startWidget.className = 'editor-widget';
     endWidget.className = 'editor-widget';
 
     startWidget.innerHTML = '/';
-    endWidget.innerHTML = '/gi';
+    endWidget.innerHTML = '/' + flagsString;
 
     editor.addWidget({ line: 0, ch: 0 }, startWidget, true);
     editor.addWidget({ line: 0, ch: 0 }, endWidget, true);
@@ -43,7 +57,7 @@ const RegexEditor = () => {
       if (change.text.length === 2 && change.text.join('') === '')
         return change.cancel();
     });
-  }, [editorRef.current, editorInstance.current]);
+  }, [flagsString, editorRef.current, editorInstance.current]);
 
   useEffect(() => {
     if (!editorInstance.current) return;
@@ -81,10 +95,32 @@ const RegexEditor = () => {
     });
   }, [regex, editorInstance.current]);
 
+  useEffect(() => {
+    if (endWidgetRef.current)
+      endWidgetRef.current.textContent = '/' + flagsString;
+  }, [flagsString]);
+
   return (
     <section className='regex-editor-section'>
-      <header className='flex justify-between items-start'>
-        <h2 className='font-semibold mb-2'>Regex</h2>
+      <header className='section-header flex justify-between items-start'>
+        <h2 className='title grow font-semibold mb-2'>
+          JavaScript Regex - add debounce and throttle
+        </h2>
+        <button
+          ref={flagsButtonRef}
+          onClick={shownToggler}
+          className='flag-button relative mr-4'
+        >
+          <img
+            src='/flag.svg'
+            alt='flag icon'
+            className='flag-icon inline w-4 mr-1'
+          />
+          flags
+          <Tooltip shown={shown}>
+            <FlagsTooltip />
+          </Tooltip>
+        </button>
         <span
           className={clsx(
             'match-count text-sm text-white rounded-md px-3 pt-1 pb-1.5 -mt-0.5',
