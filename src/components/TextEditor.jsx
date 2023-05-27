@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/lib/codemirror.css';
-import './Editor.css';
+import '../styles/Editor.css';
 
 // * context
 import { RegexCtx } from '../context/RegexContextProvider';
@@ -12,13 +12,16 @@ import { RegexCtx } from '../context/RegexContextProvider';
 const TextEditor = () => {
   const editorRef = useRef(null);
   const editorInstance = useRef(null);
-  const [text, setText] = useState('sina bayan');
+  const [text, setText] = useState('regex-it');
   const { regex, flags, flagsString, setMatchCount } = useContext(RegexCtx);
+  const config = {
+    value: text,
+  };
 
   useEffect(() => {
     if (!editorRef.current || editorInstance.current) return;
 
-    const editor = CodeMirror(editorRef.current);
+    const editor = CodeMirror(editorRef.current, config);
     editorInstance.current = editor;
     editor.on('change', editor => setText(editor.getValue()));
   }, [editorRef.current, editorInstance.current]);
@@ -57,12 +60,12 @@ const TextEditor = () => {
   }, [text, regex, flags, editorInstance.current]);
 
   return (
-    <section className='text-editor-section mt-6 overflow-hidden'>
+    <section className='text-editor-section overflow-hidden h-full pb-8'>
       <header className='section-header'>
         <h2 className='title font-semibold mb-2'>Test String</h2>
       </header>
-      <div className='editor-container border border-gray-300'>
-        <div ref={editorRef} className='editor text-editor' />
+      <div className='editor-container h-full border border-gray-300'>
+        <div ref={editorRef} className='editor text-editor bg-red-200 h-full' />
       </div>
     </section>
   );

@@ -2,11 +2,11 @@ import { useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 // * codemirror
-import CodeMirror from 'codemirror';
+import CodeMirror, { changeEnd } from 'codemirror';
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/lib/codemirror.css';
-import './Editor.css';
-import './RegexEditor.css';
+import '../styles/Editor.css';
+import '../styles/RegexEditor.css';
 
 // * hooks
 import useSwitch from '../hooks/useSwitch';
@@ -54,8 +54,12 @@ const RegexEditor = () => {
 
     editor.on('change', editor => setRegex(editor.getValue()));
     editor.on('beforeChange', (_, change) => {
-      if (change.text.length === 2 && change.text.join('') === '')
-        return change.cancel();
+      const { text, origin } = change;
+      const textString = text.join('');
+
+      if (textString === '' && origin !== '+delete') return change.cancel();
+      if (text.length === 2)
+        change.update(change.from, change.to, [textString]);
     });
   }, [flagsString, editorRef.current, editorInstance.current]);
 
@@ -102,39 +106,39 @@ const RegexEditor = () => {
 
   return (
     <section className='regex-editor-section'>
-      <header className='section-header flex justify-between items-start'>
-        <h2 className='title grow font-semibold mb-2'>
-          JavaScript Regex - add debounce and throttle
-        </h2>
-        <button
-          ref={flagsButtonRef}
-          onClick={shownToggler}
-          className='flag-button relative mr-4'
-        >
-          <img
-            src='/flag.svg'
-            alt='flag icon'
-            className='flag-icon inline w-4 mr-1'
-          />
-          flags
-          <Tooltip shown={shown}>
-            <FlagsTooltip />
-          </Tooltip>
-        </button>
-        <span
-          className={clsx(
-            'match-count text-sm text-white rounded-md px-3 pt-1 pb-1.5 -mt-0.5',
-            matchCount === 0 ? 'bg-gray-500/60' : 'bg-gray-600'
-          )}
-        >
-          {clsx(
-            matchCount === 0 && 'no match',
-            matchCount === 1 && '1 match',
-            matchCount > 1 && [matchCount, 'matches']
-          )}
-        </span>
+      <header className='section-header flex flex-col sm:flex-row justify-between items-start mb-3 sm:mb-0'>
+        <h2 className='title font-semibold mb-2'>JavaScript Regex</h2>
+        <div className='header-controls'>
+          <button
+            ref={flagsButtonRef}
+            onClick={shownToggler}
+            className='flag-button relative mr-4'
+          >
+            <img
+              src='/flag.svg'
+              alt='flag icon'
+              className='flag-icon inline w-4 mr-1'
+            />
+            flags
+            <Tooltip shown={shown}>
+              <FlagsTooltip />
+            </Tooltip>
+          </button>
+          <span
+            className={clsx(
+              'match-count text-sm text-white rounded-md px-3 pt-1 pb-1.5 -mt-0.5',
+              matchCount === 0 ? 'bg-gray-500/60' : 'bg-gray-600'
+            )}
+          >
+            {clsx(
+              matchCount === 0 && 'no match',
+              matchCount === 1 && '1 match',
+              matchCount > 1 && [matchCount, 'matches']
+            )}
+          </span>
+        </div>
       </header>
-      <div className='editor-container flex items-center justify-center border border-gray-300 pb-0.5'>
+      <div className='editor-container flex items-center justify-center border border-gray-300 pb-[0.2rem]'>
         <div ref={editorRef} className='editor regex-editor w-full' />
       </div>
     </section>

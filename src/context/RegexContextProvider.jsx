@@ -4,7 +4,7 @@ import { useState, createContext } from 'react';
 export const RegexCtx = createContext(null);
 
 const RegexContextProvider = ({ children }) => {
-  const [regex, setRegex] = useState('\\w');
+  const [regex, setRegex] = useState('\\w+');
   const [matchCount, setMatchCount] = useState(0);
   const [flags, setFlags] = useState({
     ignore_case: '',
