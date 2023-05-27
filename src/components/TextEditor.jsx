@@ -13,7 +13,7 @@ const TextEditor = () => {
   const editorRef = useRef(null);
   const editorInstance = useRef(null);
   const [text, setText] = useState('sina bayan');
-  const { regex, flagsString, setMatchCount } = useContext(RegexCtx);
+  const { regex, flags, flagsString, setMatchCount } = useContext(RegexCtx);
 
   useEffect(() => {
     if (!editorRef.current || editorInstance.current) return;
@@ -54,7 +54,7 @@ const TextEditor = () => {
     }
 
     setMatchCount(marksCount);
-  }, [text, regex, editorInstance.current]);
+  }, [text, regex, flags, editorInstance.current]);
 
   return (
     <section className='text-editor-section mt-6 overflow-hidden'>
