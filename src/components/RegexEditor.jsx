@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 
 // * codemirror
-import CodeMirror, { changeEnd } from 'codemirror';
+import CodeMirror from 'codemirror';
 import 'codemirror/addon/search/searchcursor';
 import 'codemirror/lib/codemirror.css';
 import '../styles/Editor.css';
